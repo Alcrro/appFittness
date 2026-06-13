@@ -1,14 +1,14 @@
 import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
-import { AuthProvider, useAuth } from "./context/AuthContext";
-import { Layout } from "./components/layout/Layout";
-import { AuthPage } from "./pages/Auth";
-import { DashboardPage } from "./pages/Dashboard";
-import { WorkoutsPage } from "./pages/Workouts";
-import { WorkoutDetailPage } from "./pages/WorkoutDetail";
-import { ActiveSessionPage } from "./pages/ActiveSession";
-import { HistoryPage } from "./pages/History";
-import { ProgressPage } from "./pages/Progress";
-import { ProfilePage } from "./pages/Profile";
+import { AuthProvider, useAuth } from "./shared/context/AuthContext";
+import { Layout } from "./shared/components/organisms/layout/Layout";
+import { AuthPage } from "./features/auth/pages/Auth";
+import { DashboardPage } from "./features/dashboard/pages/Dashboard";
+import { WorkoutsPage } from "./features/workouts/pages/Workouts";
+import { WorkoutDetailPage } from "./features/workouts/pages/WorkoutDetail";
+import { ActiveSessionPage } from "./features/session/pages/ActiveSession";
+import { HistoryPage } from "./features/history/pages/History";
+import { ProgressPage } from "./features/progress/pages/Progress";
+import { ProfilePage } from "./features/profile/pages/Profile";
 import { ReactNode } from "react";
 
 function Spinner() {
