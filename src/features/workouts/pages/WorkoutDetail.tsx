@@ -87,9 +87,23 @@ export function WorkoutDetailPage() {
       ) : (
         <DndContext sensors={sensors} collisionDetection={closestCenter} onDragEnd={handleDragEnd}>
           <SortableContext items={exercises.map(e => e.id)} strategy={verticalListSortingStrategy}>
-            <div className="space-y-2">
-              {exercises.map(we => (
-                <ExerciseRow key={we.id} we={we} onRemove={removeExercise} onUpdate={updateExercise} />
+            <div className="space-y-5">
+              {Object.entries(
+                exercises.reduce<Record<string, typeof exercises>>((acc, we) => {
+                  const group = we.exercises?.muscle_group ?? 'Altele'
+                  if (!acc[group]) acc[group] = []
+                  acc[group].push(we)
+                  return acc
+                }, {})
+              ).map(([group, items]) => (
+                <div key={group}>
+                  <p className="text-xs font-semibold uppercase tracking-widest text-orange-500 mb-2">{group}</p>
+                  <div className="space-y-2">
+                    {items.map(we => (
+                      <ExerciseRow key={we.id} we={we} onRemove={removeExercise} onUpdate={updateExercise} />
+                    ))}
+                  </div>
+                </div>
               ))}
             </div>
           </SortableContext>

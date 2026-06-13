@@ -11,11 +11,15 @@ interface AddExerciseModalProps {
 }
 
 export function AddExerciseModal({ open, exerciseName, saving, onClose, onSubmit }: AddExerciseModalProps) {
-  const [form, setForm] = useState({ sets: 3, reps: 10, rest_seconds: 90 })
+  const [form, setForm] = useState({ sets: '3', reps: '10', rest_seconds: '90' })
 
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault()
-    await onSubmit(form.sets, form.reps, form.rest_seconds)
+    await onSubmit(
+      Math.max(1, parseInt(form.sets) || 1),
+      Math.max(1, parseInt(form.reps) || 1),
+      Math.max(0, parseInt(form.rest_seconds) || 0),
+    )
   }
 
   return (
@@ -28,9 +32,12 @@ export function AddExerciseModal({ open, exerciseName, saving, onClose, onSubmit
                 {['Seturi', 'Reps', 'Pauză (s)'][i]}
               </label>
               <input
-                type="number"
+                type="text"
+                inputMode="numeric"
+                pattern="[0-9]*"
                 value={form[field]}
-                onChange={e => setForm(p => ({ ...p, [field]: Number(e.target.value) }))}
+                onChange={e => setForm(p => ({ ...p, [field]: e.target.value.replace(/[^0-9]/g, '') }))}
+                onFocus={e => e.target.select()}
                 className="w-full bg-gray-800 border border-gray-700 rounded-xl px-3 py-2 text-white text-center focus:outline-none focus:ring-2 focus:ring-orange-500"
               />
             </div>
