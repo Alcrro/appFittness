@@ -13,16 +13,17 @@ interface SessionExerciseBlockProps {
   we: WorkoutExercise
   logs: SessionLog[]
   restSeconds: number
+  prevLog?: { weight: number | null; reps: number }
   onLogSet: (exerciseId: string, workoutExerciseId: string, setData: { weight: number | null; reps: number; rpe: number | null; notes: string | null }) => Promise<{ data: SessionLog | null; error: unknown }>
   onDeleteLog: (id: string) => Promise<{ error: unknown }>
 }
 
-export function SessionExerciseBlock({ we, logs, restSeconds, onLogSet, onDeleteLog }: SessionExerciseBlockProps) {
+export function SessionExerciseBlock({ we, logs, restSeconds, prevLog, onLogSet, onDeleteLog }: SessionExerciseBlockProps) {
   const exerciseLogs = logs.filter(l => l.workout_exercise_id === we.id)
   const lastLog = exerciseLogs[exerciseLogs.length - 1]
 
   const [form, setForm] = useState({
-    weight: lastLog?.weight?.toString() ?? '',
+    weight: lastLog?.weight?.toString() ?? prevLog?.weight?.toString() ?? '',
     reps: we.reps.toString(),
     rpe: '',
     notes: '',
@@ -72,6 +73,11 @@ export function SessionExerciseBlock({ we, logs, restSeconds, onLogSet, onDelete
         <div>
           <h4 className="font-bold text-white">{we.exercises?.name}</h4>
           <p className="text-xs text-gray-400">{we.exercises?.muscle_group} • {we.sets} × {we.reps} rep</p>
+          {prevLog && (
+            <p className="text-xs text-orange-400/70 mt-0.5">
+              Ultima dată: {prevLog.weight != null ? `${prevLog.weight} kg × ` : ''}{prevLog.reps} rep
+            </p>
+          )}
         </div>
       </div>
 

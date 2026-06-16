@@ -1,6 +1,6 @@
 import { useState, useEffect, useRef } from 'react'
 import { useParams, useNavigate } from 'react-router-dom'
-import { useSessions, useActiveSession } from '../hooks/useSessions'
+import { useSessions, useActiveSession, usePreviousExerciseLogs } from '../hooks/useSessions'
 import { useWorkoutDetail } from '../../workouts/hooks/useWorkouts'
 import { SessionExerciseBlock } from '../components/SessionExerciseBlock'
 import { SessionHeader } from '../components/SessionHeader'
@@ -13,6 +13,7 @@ export function ActiveSessionPage() {
   const { exercises } = useWorkoutDetail(workoutId)
   const [sessionId, setSessionId] = useState<string | null>(null)
   const { session, logs, logSet, deleteLog } = useActiveSession(sessionId)
+  const prevLogs = usePreviousExerciseLogs(exercises.map(e => e.exercise_id), sessionId)
   const [starting, setStarting] = useState(true)
   const [showFinish, setShowFinish] = useState(false)
   const [elapsed, setElapsed] = useState(0)
@@ -72,6 +73,7 @@ export function ActiveSessionPage() {
                   we={we}
                   logs={logs}
                   restSeconds={we.rest_seconds ?? 90}
+                  prevLog={prevLogs[we.exercise_id]}
                   onLogSet={logSet}
                   onDeleteLog={deleteLog}
                 />

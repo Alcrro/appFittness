@@ -107,6 +107,31 @@ export function useActiveSession(sessionId: string | null) {
   return { session, logs, loading, logSet, deleteLog, refetch: fetchSession }
 }
 
+export function usePreviousExerciseLogs(exerciseIds: string[], currentSessionId: string | null) {
+  const { user } = useAuth()
+  const [prevLogs, setPrevLogs] = useState<Record<string, { weight: number | null; reps: number }>>({})
+
+  useEffect(() => {
+    if (!user || !currentSessionId || exerciseIds.length === 0) return
+    supabase
+      .from('session_logs')
+      .select('exercise_id, weight, reps, logged_at')
+      .in('exercise_id', exerciseIds)
+      .neq('session_id', currentSessionId)
+      .order('logged_at', { ascending: false })
+      .then(({ data }) => {
+        if (!data) return
+        const map: Record<string, { weight: number | null; reps: number }> = {}
+        for (const log of data) {
+          if (!map[log.exercise_id]) map[log.exercise_id] = { weight: log.weight, reps: log.reps }
+        }
+        setPrevLogs(map)
+      })
+  }, [currentSessionId, exerciseIds.join(',')])
+
+  return prevLogs
+}
+
 export function useExerciseHistory(exerciseId: string | null) {
   const { user } = useAuth()
   const [history, setHistory] = useState<SessionLog[]>([])
