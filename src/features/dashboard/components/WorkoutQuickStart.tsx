@@ -1,3 +1,4 @@
+import { useState } from 'react'
 import { Card } from '../../../shared/components/atoms/Card'
 import { Button } from '../../../shared/components/atoms/Button'
 import { Play, Dumbbell } from 'lucide-react'
@@ -11,6 +12,9 @@ interface WorkoutQuickStartProps {
 }
 
 export function WorkoutQuickStart({ workouts, onStart, onViewAll, onCreatePlan }: WorkoutQuickStartProps) {
+  const [showAll, setShowAll] = useState(false)
+  const visible = showAll ? workouts : workouts.slice(0, 3)
+
   return (
     <div>
       <h3 className="text-white font-bold mb-3 flex items-center gap-2">
@@ -25,7 +29,7 @@ export function WorkoutQuickStart({ workouts, onStart, onViewAll, onCreatePlan }
         </Card>
       ) : (
         <div className="space-y-2">
-          {workouts.slice(0, 3).map(w => (
+          {visible.map(w => (
             <Card key={w.id} className="p-4 flex items-center justify-between">
               <div>
                 <div className="font-semibold text-white">{w.name}</div>
@@ -41,10 +45,10 @@ export function WorkoutQuickStart({ workouts, onStart, onViewAll, onCreatePlan }
           ))}
           {workouts.length > 3 && (
             <button
-              onClick={onViewAll}
+              onClick={() => setShowAll(p => !p)}
               className="w-full text-center text-sm text-orange-500 hover:text-orange-400 py-2"
             >
-              Vezi toate ({workouts.length}) →
+              {showAll ? 'Arată mai puțin ↑' : `Vezi toate (${workouts.length}) →`}
             </button>
           )}
         </div>
