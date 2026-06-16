@@ -5,8 +5,9 @@ import { SetRow } from './SetRow'
 import { RpeSelector } from './RpeSelector'
 import { RestTimer } from './RestTimer'
 import { calculate1RM } from '../../../shared/lib/exercises'
+import { getExerciseImage } from '../../../shared/lib/exercise_images'
 import type { WorkoutExercise, SessionLog } from '../../../shared/types'
-import { Check, Timer } from 'lucide-react'
+import { Check, Timer, Dumbbell } from 'lucide-react'
 
 interface SessionExerciseBlockProps {
   we: WorkoutExercise
@@ -46,11 +47,32 @@ export function SessionExerciseBlock({ we, logs, restSeconds, onLogSet, onDelete
   const weightNum = form.weight !== '' ? Number(form.weight) : null
   const repsNum = Number(form.reps)
 
+  const img = we.exercises ? (we.exercises.image_url ?? getExerciseImage(we.exercises.name)) : null
+
   return (
     <Card className="p-4 space-y-3">
-      <div>
-        <h4 className="font-bold text-white">{we.exercises?.name}</h4>
-        <p className="text-xs text-gray-400">{we.exercises?.muscle_group} • {we.sets} × {we.reps} rep</p>
+      <div className="flex items-center gap-3">
+        <div className="w-14 h-14 rounded-xl overflow-hidden bg-gray-800 flex-shrink-0 flex items-center justify-center">
+          {img ? (
+            <img
+              src={img}
+              alt={we.exercises?.name}
+              className="w-full h-full object-cover"
+              loading="lazy"
+              onError={e => {
+                (e.currentTarget as HTMLImageElement).style.display = 'none';
+                (e.currentTarget.nextSibling as HTMLElement).style.display = 'flex'
+              }}
+            />
+          ) : null}
+          <span className={`text-gray-600 ${img ? 'hidden' : 'flex'} items-center justify-center w-full h-full`}>
+            <Dumbbell size={22} />
+          </span>
+        </div>
+        <div>
+          <h4 className="font-bold text-white">{we.exercises?.name}</h4>
+          <p className="text-xs text-gray-400">{we.exercises?.muscle_group} • {we.sets} × {we.reps} rep</p>
+        </div>
       </div>
 
       {exerciseLogs.length > 0 && (

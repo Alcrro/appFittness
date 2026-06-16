@@ -54,16 +54,30 @@ export function ActiveSessionPage() {
         onFinish={() => setShowFinish(true)}
       />
 
-      <div className="space-y-3">
-        {exercises.map(we => (
-          <SessionExerciseBlock
-            key={we.id}
-            we={we}
-            logs={logs}
-            restSeconds={we.rest_seconds ?? 90}
-            onLogSet={logSet}
-            onDeleteLog={deleteLog}
-          />
+      <div className="space-y-5">
+        {Object.entries(
+          exercises.reduce<Record<string, typeof exercises>>((acc, we) => {
+            const group = we.exercises?.muscle_group ?? 'Altele'
+            if (!acc[group]) acc[group] = []
+            acc[group].push(we)
+            return acc
+          }, {})
+        ).map(([group, items]) => (
+          <div key={group}>
+            <p className="text-xs font-semibold uppercase tracking-widest text-orange-500 mb-2 px-1">{group}</p>
+            <div className="space-y-3">
+              {items.map(we => (
+                <SessionExerciseBlock
+                  key={we.id}
+                  we={we}
+                  logs={logs}
+                  restSeconds={we.rest_seconds ?? 90}
+                  onLogSet={logSet}
+                  onDeleteLog={deleteLog}
+                />
+              ))}
+            </div>
+          </div>
         ))}
       </div>
 
